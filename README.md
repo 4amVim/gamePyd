@@ -133,6 +133,9 @@ See also the list of [contributors](https://github.com/bayangan1991/PYXInput/gra
 
 This project is licensed under the MIT License
 
+## Credits
+This repo is based on [bayangan1991](https://github.com/bayangan1991)'s repo of the same name [here](https://github.com/bayangan1991/PYXInput).
+
 ## Acknowledgments
 
 * Everyone at [vJoy](http://vjoystick.sourceforge.net/site/) for the vXboxInterface DLL
@@ -140,3 +143,4 @@ This project is licensed under the MIT License
 * [nefarius](https://github.com/nefarius) for [ScpVBus](https://github.com/nefarius/ScpVBus)
 * [Flandan](https://github.com/flandan) for helping debug the `setup.py`
 * [getbrainerror](https://github.com/getbrainerror) for the self-sign version of ScpVBus
+

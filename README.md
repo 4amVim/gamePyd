@@ -17,9 +17,6 @@ Open an elevated cmd command prompt in the ScpVBus-x64 directory and run `devcon
     Updating drivers for Root\ScpVBus from {Location}\PYXInput\ScpVBus-x64\ScpVBus.inf.
     Drivers installed successfully.
 
-### Installing x360ce
-Extract the provided zip to where your game's executable is.
-
 ## Installing
 Now that the basics are done, we ought to go throught the usual motions:
 

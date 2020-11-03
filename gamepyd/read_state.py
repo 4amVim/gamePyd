@@ -49,16 +49,16 @@ class rController(object):
 
     # All possible button values
     _buttons = {
-        'DPAD_UP': 0x0001,
-        'DPAD_DOWN': 0x0002,
-        'DPAD_LEFT': 0x0004,
-        'DPAD_RIGHT': 0x0008,
+        'UP': 0x0001,
+        'DOWN': 0x0002,
+        'LEFT': 0x0004,
+        'RIGHT': 0x0008,
         'START': 0x0010,
-        'BACK': 0x0020,
-        'LEFT_THUMB': 0x0040,
-        'RIGHT_THUMB': 0x0080,
-        'LEFT_SHOULDER': 0x0100,
-        'RIGHT_SHOULDER': 0x0200,
+        'SELECT': 0x0020,
+        'L3': 0x0040,
+        'R3': 0x0080,
+        'LB': 0x0100,
+        'RB': 0x0200,
         'A': 0x1000,
         'B': 0x2000,
         'X': 0x4000,
@@ -66,14 +66,15 @@ class rController(object):
     }
 
     def __init__(self, ControllerID):
-        """Initialise Controller object
-        ControllerID    Int     Position number of desired controller (order of connection)
+        """
+        Initialise Controller object.
+        ControllerID    Int     Position of gamepad.
         """
         self.ControllerID = ControllerID
         self.dwPacketNumber = c_uint()
 
     @property
-    def gamepad(self):
+    def read(self):
         """Returns the current gamepad state. Buttons pressed is shown as a raw integer value.
         Use rController.buttons for a list of buttons pressed.
         """
@@ -86,13 +87,15 @@ class rController(object):
     @property
     def buttons(self):
         """Returns a list of buttons currently pressed"""
-        return [name for name, value in rController._buttons.items()
-                if self.gamepad.wButtons & value == value]
+        return [
+            name for name, value in rController._buttons.items()
+            if (self.read.wButtons & value) == value
+        ]
 
 
 def main():
     """Test the functionality of the rController object"""
-    import time
+    from time import sleep
 
     print('Testing controller in position 1:')
     print('Running 3 x 3 seconds tests')
@@ -103,11 +106,10 @@ def main():
     # Loop printing controller state and buttons held
     for i in range(3):
         print('Waiting...')
-        time.sleep(2.5)
-        print('State: ', con.gamepad)
+        sleep(2.5)
+        print('State: ', con.read)
         print('Buttons: ', con.buttons)
-        time.sleep(0.5)
-
+        sleep(0.5)
     print('Done!')
 
 

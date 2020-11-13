@@ -47,8 +47,7 @@ class _xinput_state(Structure):
 class rController(object):
     """XInput Controller State reading object"""
 
-    # All possible button values
-    _buttons = {
+    _buttons = {    # All possible button values
         'UP': 0x0001,
         'DOWN': 0x0002,
         'LEFT': 0x0004,
@@ -75,24 +74,17 @@ class rController(object):
 
     @property
     def read(self):
-        """Returns the current gamepad state. Buttons pressed is shown as a raw integer value.
-        Use rController.buttons for a list of buttons pressed.
+        """
+        Returns the current gamepad state.
         """
         state = _xinput_state()
         _xinput.XInputGetState(self.ControllerID - 1, pointer(state))
         self.dwPacketNumber = state.dwPacketNumber
-
-        return state.XINPUT_GAMEPAD
-
-    @property
-    def buttons(self):
-        """Returns a list of buttons currently pressed"""
-        return [
-            name for name, value in rController._buttons.items()
-            if (self.read.wButtons & value) == value
-        ]
-
-
+        check= lambda x: (state.XINPUT_GAMEPAD.wButtons & x)==x
+        buttons={name:check(value) for name,value in rController._buttons.items()}
+        analogs=state.XINPUT_GAMEPAD.__dict__();del analogs['wButtons']
+        return {**analogs,**buttons}
+        #return foobar
 def main():
     """Test the functionality of the rController object"""
     from time import sleep
@@ -106,9 +98,8 @@ def main():
     # Loop printing controller state and buttons held
     for i in range(3):
         print('Waiting...')
-        sleep(2.5)
+        sleep(1)
         print('State: ', con.read)
-        print('Buttons: ', con.buttons)
         sleep(0.5)
     print('Done!')
 

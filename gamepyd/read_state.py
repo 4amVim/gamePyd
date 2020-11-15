@@ -10,10 +10,13 @@ except OSError as err:
 
 class _xinput_gamepad(Structure):
     """CType XInput Gamepad Object"""
-    _fields_ = [("wButtons", c_ushort), ("left_trigger", c_ubyte),
-                ("right_trigger", c_ubyte), ("thumb_lx", c_short),
-                ("thumb_ly", c_short), ("thumb_rx", c_short),
-                ("thumb_ry", c_short)]
+    _fields_ = [("wButtons", c_ushort), #Contains all button information in one integer
+                ("LT", c_ubyte),        #Left Trigger
+                ("RT", c_ubyte),        #Right Trigger
+                ("Lx", c_short),        #Right stick horizontal movement
+                ("Ly", c_short),        #Right stick vertical movement
+                ("Rx", c_short),        #Left stick horizontal movement
+                ("Ry", c_short)]        #Left stick vertical movement
 
     fields = [f[0] for f in _fields_]
 
@@ -84,7 +87,7 @@ class rController(object):
         buttons={name:check(value) for name,value in rController._buttons.items()}
         analogs=state.XINPUT_GAMEPAD.__dict__();del analogs['wButtons']
         return {**analogs,**buttons}
-        #return foobar
+
 def main():
     """Test the functionality of the rController object"""
     from time import sleep
@@ -96,11 +99,12 @@ def main():
     con = rController(1)
 
     # Loop printing controller state and buttons held
-    for i in range(3):
-        print('Waiting...')
-        sleep(1)
+    for i in range(30):
+        #print('Waiting...')
+        #sleep(1)
         print('State: ', con.read)
-        sleep(0.5)
+        print("---------------------------------------------")
+        sleep(0.2)
     print('Done!')
 
 

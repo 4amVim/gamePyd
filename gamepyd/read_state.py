@@ -1,6 +1,7 @@
 """Read the current state of Xbox Controllers"""
 from ctypes import *
-import pandas as pd 
+import pandas as pd
+from time import time_ns
 
 # Xinput DLL
 try:
@@ -11,13 +12,16 @@ except OSError as err:
 
 class _xinput_gamepad(Structure):
     """CType XInput Gamepad Object"""
-    _fields_ = [("wButtons", c_ushort), #Contains all button information in one integer
-                ("LT", c_ubyte),        #Left Trigger
-                ("RT", c_ubyte),        #Right Trigger
-                ("Lx", c_short),        #Right stick horizontal movement
-                ("Ly", c_short),        #Right stick vertical movement
-                ("Rx", c_short),        #Left stick horizontal movement
-                ("Ry", c_short)]        #Left stick vertical movement
+    _fields_ = [
+        ("wButtons",
+         c_ushort),  #Contains all button information in one integer
+        ("LT", c_ubyte),  #Left Trigger
+        ("RT", c_ubyte),  #Right Trigger
+        ("Lx", c_short),  #Right stick horizontal movement
+        ("Ly", c_short),  #Right stick vertical movement
+        ("Rx", c_short),  #Left stick horizontal movement
+        ("Ry", c_short)
+    ]  #Left stick vertical movement
 
     fields = [f[0] for f in _fields_]
 
@@ -51,7 +55,7 @@ class _xinput_state(Structure):
 class rController(object):
     """XInput Controller State reading object"""
 
-    _buttons = {    # All possible button values
+    _buttons = {  # All possible button values
         'UP': 0x0001,
         'DOWN': 0x0002,
         'LEFT': 0x0004,
@@ -84,12 +88,16 @@ class rController(object):
         state = _xinput_state()
         _xinput.XInputGetState(self.ControllerID - 1, pointer(state))
         self.dwPacketNumber = state.dwPacketNumber
-        check= lambda x: (state.XINPUT_GAMEPAD.wButtons & x)==x
-        buttons={name:check(value) for name,value in rController._buttons.items()}
-        analogs=state.XINPUT_GAMEPAD.__dict__();del analogs['wButtons']
-        return {**analogs,**buttons}
+        check = lambda x: (state.XINPUT_GAMEPAD.wButtons & x) == x
+        buttons = {
+            name: check(value)
+            for name, value in rController._buttons.items()
+        }
+        analogs = state.XINPUT_GAMEPAD.__dict__()
+        del analogs['wButtons']
+        return {**analogs, **buttons}
 
-    def prettyRead(rate=float(1/120),type="df",file=""):
+    def prettyRead(self, duration=5, rate=float(1 / 120), type="df", file=""):
         """
         Adds more functionality to read
         """
@@ -103,7 +111,7 @@ class rController(object):
         #Setup loop parameters
         line = []
         start = time_ns()
-        count = seconds // rate
+        count = duration // rate
         wait_ns = rate * 10**9
         i = 0
 
@@ -113,10 +121,13 @@ class rController(object):
             #foo=str(xbox.read)
             #jot.write(foo+"\n")
             if (time_ns() >= start + wait_ns):
-                moment = readxbox.read.__dict__(
-                )  # will return a dictionary for instantaneous state of the controller
-                moment['time'] = time_ns()
-                moment['timeDelta'] = (time_ns() - start) / 10**6
+                moment = self.read  # will return a dictionary for instantaneous state of the controller
+                moment['time(ns)'] = time_ns(
+                )  #store current time in nanoseconds
+                moment['timeDelta(ms)'] = (
+                    time_ns() -
+                    start) / 10**6  #Store the time diffference in milliseconds
+                moment['error(ms)'] = moment['timeDelta(ms)'] - wait_ns / 10**6
                 line.append(moment)
                 i += 1
                 #print(f"time elapsed={((time_ns()-start)/10**6)/1000}")
@@ -136,9 +147,10 @@ class rController(object):
         #print(f"\n total time={perf_counter()-st}") # print a line to seperate the tqdm progress bar
 
         #write to disk if wanted
-        if (len(file) > 0 and type=="df"): 
+        if (len(file) > 0 and type == "df"):
             (pd.DataFrame(line)).to_feather(file)
-            return pd.DataFrame(line)
+        return pd.DataFrame(line)
+
 
 def main():
     """Test the functionality of the rController object"""
@@ -151,13 +163,12 @@ def main():
     con = rController(1)
 
     # Loop printing controller state and buttons held
-    for i in range(30):
-        #print('Waiting...')
-        #sleep(1)
-        print('State: ', con.read)
+    for i in range(5):
+        print(f'State:{con.read}')
         print("---------------------------------------------")
         sleep(0.2)
-    print('Done!')
+    print(f'State:{con.prettyRead(1)}')
+    print(con.prettyRead(1).head)
 
 
 if __name__ == '__main__':

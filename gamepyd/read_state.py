@@ -1,5 +1,6 @@
 """Read the current state of Xbox Controllers"""
 from ctypes import *
+import pandas as pd 
 
 # Xinput DLL
 try:
@@ -87,6 +88,57 @@ class rController(object):
         buttons={name:check(value) for name,value in rController._buttons.items()}
         analogs=state.XINPUT_GAMEPAD.__dict__();del analogs['wButtons']
         return {**analogs,**buttons}
+
+    def prettyRead(rate=float(1/120),type="df",file=""):
+        """
+        Adds more functionality to read
+        """
+        """
+        Opens the game, and records for seconds, possibly writing to file
+        seconds=time to record for, in seconds
+        interval gives how often to record, in seconds)
+        file, if provided, creates/overwrites into that filename at root
+        """
+
+        #Setup loop parameters
+        line = []
+        start = time_ns()
+        count = seconds // rate
+        wait_ns = rate * 10**9
+        i = 0
+
+        #Time for the loop
+        #pbar = tq(total=count, position=0, leave=True)
+        while (i < count):
+            #foo=str(xbox.read)
+            #jot.write(foo+"\n")
+            if (time_ns() >= start + wait_ns):
+                moment = readxbox.read.__dict__(
+                )  # will return a dictionary for instantaneous state of the controller
+                moment['time'] = time_ns()
+                moment['timeDelta'] = (time_ns() - start) / 10**6
+                line.append(moment)
+                i += 1
+                #print(f"time elapsed={((time_ns()-start)/10**6)/1000}")
+                start = time_ns()
+        #        pbar.update(1)
+        #print(f"iteration {i} got gamepad like \n{moment}")
+        #else:
+        #  i-=1
+        #if (debug==True):
+        #clear_output(wait=True)  #clears output in jupyter
+        #print(f"iteration {i} got gamepad like \n{moment}") #print current state
+        #print(f"iteration {i} got line like \n{line}") #print current state
+        #sleep(step*0.5)
+        #end=perf_counter()
+        #dur=end-start
+        #print(f"RRRR:-------{dur}") if ((dur)<=step) else print(f"aaaa:>>>>>{dur}")
+        #print(f"\n total time={perf_counter()-st}") # print a line to seperate the tqdm progress bar
+
+        #write to disk if wanted
+        if (len(file) > 0 and type=="df"): 
+            (pd.DataFrame(line)).to_feather(file)
+            return pd.DataFrame(line)
 
 def main():
     """Test the functionality of the rController object"""

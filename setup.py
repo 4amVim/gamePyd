@@ -18,44 +18,44 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='pyxinput',
+    name='gamepyd',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.9.0',
+    version='0.1.0',
 
-    description='Python Implmenentation of vXbox and XInput DLL',
+    description='Read a plugged in controller or emulate input from upto 4 virtual controllers.',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/bayangan1991/PYXInput',
+    url='https://github.com/PCPLays/gamePyd',
 
     # Author details
-    author='Ryan Barnes (@bayangan1991)',
-    author_email='ryan.bayangan@gmail.com',
+    author='Ayush Rawat (@PCplays)',
+    author_email='rawatayush1997@gmail.com',
 
     # Choose your license
-    license='MIT',
+    license='Unlicense',
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools',
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
+        'License :: OSI Approved :: The Unlicense (Unlicense)',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
+    python_requires='>=3.6',
 
-    keywords='pygta5 virtual xbox controller xinput',
+    keywords='virtual xbox controller xinput pyxinput',
 
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
     # installs the DLL with the package
-    package_data={'pyxinput': [
+    package_data={'gamepyd': [
         'vXboxInterface-x64/vXboxInterface.dll',
         'vXboxInterface-x64/msvcp120.dll',
         'vXboxInterface-x64/msvcr120.dll',

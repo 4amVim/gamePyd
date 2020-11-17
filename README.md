@@ -22,13 +22,15 @@ Now that the basics are done, we ought to go throught the usual motions:
 
 ### Install via pip
 
-    pip install PYXInput
+    pip install gamePyd
 
 ### Are you in a rush?
-Ok, so here goes, this library contains two main modules. [virtual_controller](/pyxinput/virtual_controller.py) is for creating a virtual controller and
-[read_state](/pyxinput//read_state.py) is for reading the current state of any xbox controller (virtual or real). Run to line 77 of the former to start controlling.
+Ok, so here goes, this library contains two main modules. [writePad](/gamePyd/writePad.py) is for creating a virtual controller and
+[readPad](/gamePyd/readPad.py) is for reading the current state of any xbox controller (virtual or real). Run to line 77 of the former to start controlling.
 
 If you're not in a rush, we've got a bit more to talk about.
+
+### Following is WIP
 
 ### Test the creation of virtual controllers
 Running `pyxinput.test_virtual()` should yield:

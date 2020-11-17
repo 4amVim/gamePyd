@@ -72,7 +72,7 @@ Buttons:  []
 
 Each use case of this library can be initialised as an object. Below is an example of how to use this package.
 
-```python
+```
 import pyxinput
 
 MyVirtual = pyxinput.vController()

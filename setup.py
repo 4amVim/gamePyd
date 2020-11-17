@@ -14,19 +14,19 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+with open('README.md','r') as f:
     long_description = f.read()
 
 setup(
-    name='gamepyd',
+    name='gamePyd',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.1.0',
-
-    description='Read a plugged in controller or emulate input from upto 4 virtual controllers.',
+    version='0.0.8',
+    description='Read or emulate gamepads conviniently',
     long_description=long_description,
+    long_description_content_type='text/markdown; charset=UTF-8; variant=GFM',
 
     # The project's main homepage.
     url='https://github.com/PCPLays/gamePyd',
@@ -49,19 +49,17 @@ setup(
         'Programming Language :: Python :: 3.9',
     ],
     python_requires='>=3.6',
-
     keywords='virtual xbox controller xinput pyxinput',
-
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
     # installs the DLL with the package
-    package_data={'gamepyd': [
-        'vXboxInterface-x64/vXboxInterface.dll',
-        'vXboxInterface-x64/msvcp120.dll',
-        'vXboxInterface-x64/msvcr120.dll',
-        'vXboxInterface-x86/vXboxInterface.dll',
-        'vXboxInterface-x86/msvcp120.dll',
-        'vXboxInterface-x86/msvcr120.dll'
-    ]}
-
-)
+    package_data={
+        'gamepyd': [
+            'vXboxInterface-x64/vXboxInterface.dll',
+            'vXboxInterface-x64/msvcp120.dll',
+            'vXboxInterface-x64/msvcr120.dll',
+            'vXboxInterface-x86/vXboxInterface.dll',
+            'vXboxInterface-x86/msvcp120.dll',
+            'vXboxInterface-x86/msvcr120.dll'
+        ]
+    })

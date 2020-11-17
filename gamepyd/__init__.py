@@ -24,11 +24,13 @@ if not _xinput.isVBusExists():
     raise MissingDependancyError(
         '''Unable to find VBus Controller.
 
-For more information, refer to https://github.com/shauleiz/vXboxInterface/releases.
-For a quick-fix, install ScpVBus from the PreRequisites folder (or grab a release directly
-from the original repo at https://github.com/nefarius/ScpVBus/releases/tag/v1.7.1.1)
+            For more information, refer to https://github.com/shauleiz/vXboxInterface/releases.
+            For a quick-fix, install ScpVBus from the PreRequisites folder (or grab directly
+            from the original repo at https://github.com/nefarius/ScpVBus/releases/tag/v1.7.1.1)
+        '''
+        )
 
 from .writePad import vController
 from .readPad import rController
-from ..writePad import main as test_virtual
+from .writePad import main as test_virtual
 from .readPad import main as test_read

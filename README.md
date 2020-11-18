@@ -30,7 +30,6 @@ Ok, so here goes, this library contains two main modules. [writePad](/gamePyd/wr
 
 If you're not in a rush, we've got a bit more to talk about.
 
-### Following is WIP
 
 ### Test the creation of virtual controllers
 Running `pyxinput.test_virtual()` should yield:
@@ -55,50 +54,54 @@ Available: [1, 2, 3, 4]
 ```
 
 ### Test the reading of controllers
-Running `pyxinput.test_read()` should give:
+Running `test_read()` should give (the output below was when no controller was plugged-in):
+
 
 ```
 Testing controller in position 1:
-Running 3 x 3 seconds tests
-State:  {'wButtons': 0, 'left_trigger': 0, 'right_trigger': 0, 'thumb_lx': 0, 'thumb_ly': 0, 'thumb_rx': 0, 'thumb_ry': 0}
-Buttons:  []
-State:  {'wButtons': 0, 'left_trigger': 0, 'right_trigger': 0, 'thumb_lx': 0, 'thumb_ly': 0, 'thumb_rx': 0, 'thumb_ry': 0}
-Buttons:  []
-State:  {'wButtons': 0, 'left_trigger': 0, 'right_trigger': 0, 'thumb_lx': 0, 'thumb_ly': 0, 'thumb_rx': 0, 'thumb_ry': 0}
-Buttons:  []
+This will just take a second. We'll look at the controller values in 200 milli-second intervals:
+0---------------------------------------------
+State:{'LT': 0, 'RT': 0, 'Lx': 0, 'Ly': 0, 'Rx': 0, 'Ry': 0, 'UP': False, 'DOWN': False, 'LEFT': False, 'RIGHT': False, 'START': False, 'SELECT': False, 'L3': False, 'R3': False, 'LB': False, 'RB': False, 'A': False, 'B': False, 'X': False,
+ 'Y': False}
+---------------------------------------------
+1---------------------------------------------
+State:{'LT': 0, 'RT': 0, 'Lx': 0, 'Ly': 0, 'Rx': 0, 'Ry': 0, 'UP': False, 'DOWN': False, 'LEFT': False, 'RIGHT': False, 'START': False, 'SELECT': False, 'L3': False, 'R3': False, 'LB': False, 'RB': False, 'A': False, 'B': False, 'X': False,
+ 'Y': False}
+---------------------------------------------
+2---------------------------------------------
+State:{'LT': 0, 'RT': 0, 'Lx': 0, 'Ly': 0, 'Rx': 0, 'Ry': 0, 'UP': False, 'DOWN': False, 'LEFT': False, 'RIGHT': False, 'START': False, 'SELECT': False, 'L3': False, 'R3': False, 'LB': False, 'RB': False, 'A': False, 'B': False, 'X': False,
+ 'Y': False}
+---------------------------------------------
+3---------------------------------------------
+State:{'LT': 0, 'RT': 0, 'Lx': 0, 'Ly': 0, 'Rx': 0, 'Ry': 0, 'UP': False, 'DOWN': False, 'LEFT': False, 'RIGHT': False, 'START': False, 'SELECT': False, 'L3': False, 'R3': False, 'LB': False, 'RB': False, 'A': False, 'B': False, 'X': False,
+ 'Y': False}
+---------------------------------------------
+4---------------------------------------------
+State:{'LT': 0, 'RT': 0, 'Lx': 0, 'Ly': 0, 'Rx': 0, 'Ry': 0, 'UP': False, 'DOWN': False, 'LEFT': False, 'RIGHT': False, 'START': False, 'SELECT': False, 'L3': False, 'R3': False, 'LB': False, 'RB': False, 'A': False, 'B': False, 'X': False,
+ 'Y': False}
+---------------------------------------------
+Better yet, you can use prettyRead() to sample as many times as desired for any required duration.
+And then return it as a dataframe, can even write it to a file by supplying the filename.
+    LT  RT  Lx  Ly  Rx  Ry     UP   DOWN   LEFT  RIGHT  START  SELECT     L3     R3     LB     RB      A      B      X      Y             time(ns)  timeDelta(ms)  error(ms)
+0   0   0   0   0   0   0  False  False  False  False  False   False  False  False  False  False  False  False  False  False  1605620332292776700         9.9744   1.641067
+1   0   0   0   0   0   0  False  False  False  False  False   False  False  False  False  False  False  False  False  False  1605620332301749900         8.9732   0.639867
+2   0   0   0   0   0   0  False  False  False  False  False   False  False  False  False  False  False  False  False  False  1605620332310727300         8.9774   0.644067
+3   0   0   0   0   0   0  False  False  False  False  False   False  False  False  False  False  False  False  False  False  1605620332319701900         8.9746   0.641267
+4   0   0   0   0   0   0  False  False  False  False  False   False  False  False  False  False  False  False  False  False  1605620332328678100         8.9762   0.642867
+Do note that the final three columns are metadata.
 ```
 
 ### Coding Styles
-
-Each use case of this library can be initialised as an object. Below is an example of how to use this package.
-
-```
-import pyxinput
-
-MyVirtual = pyxinput.vController()
-
-MyRead = pyxinput.rController(1) # For Controller 1
-
-MyVirtual.set_value('BtnA', 1)
-MyVirtual.set_value('AxisLx', -0.5)
-
-print(MyRead.gamepad)
-print(MyRead.buttons)
-```
+I'll be updating the wiki once this project gets to v0.1.0 (see the accompanying project-board for a pseudo-timeline).
 
 ## Credits
+* **Ayush Rawat** - *Main Developer* - [PCplays](https://github.com/PCplays)
 
-* **Ryan Barnes** - *Main Developer* - [bayangan1991](https://github.com/bayangan1991)
+* **Ryan Barnes** - *Authot of PYXInput* - [bayangan1991](https://github.com/bayangan1991)
 
-See also the list of [contributors](https://github.com/bayangan1991/PYXInput/graphs/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License
+See also the list of [contributors](https://github.com/bayangan1991/PYXInput/graphs/contributors) who participated in PYXinput (from which this project was forked).
 
 ## Acknowledgments
 
 * Everyone at [vJoy](http://vjoystick.sourceforge.net/site/) for the vXboxInterface DLL
-* [Sentdex](https://github.com/Sentdex) for the inspiration with his [pygta5](https://github.com/Sentdex/pygta5) project
 * [nefarius](https://github.com/nefarius) for [ScpVBus](https://github.com/nefarius/ScpVBus)
-

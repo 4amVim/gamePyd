@@ -30,7 +30,7 @@ if not _xinput.isVBusExists():
         '''
         )
 
-from .writePad import vController
 from .readPad import rController
-from .writePad import main as test_virtual
 from .readPad import main as test_read
+from .writePad import vController
+from .writePad import main as test_write

@@ -72,7 +72,7 @@ class rController(object):
         'Y': 0x8000
     }
 
-    def __init__(self, ControllerID):
+    def __init__(self, ControllerID=1):
         """
         Initialise Controller object.
         ControllerID    Int     Position of gamepad.
@@ -97,7 +97,11 @@ class rController(object):
         del analogs['wButtons']
         return {**analogs, **buttons}
 
-    def prettyRead(self, duration=5, rate=float(1 / 120), type="df", file=""):
+    def prettyRead(self,
+                   duration: float = 5,
+                   rate: float = float(1 / 120),
+                   file: str = "",
+                   type="df"):
         """
         Adds more functionality to read
         """
@@ -157,18 +161,25 @@ def main():
     from time import sleep
 
     print('Testing controller in position 1:')
-    print('Running 3 x 3 seconds tests')
-
+    print(
+        "This will just take a second. We'll look at the controller values in 200 milli-second intervals:"
+    )
     # Initialise Controller
     con = rController(1)
-
     # Loop printing controller state and buttons held
     for i in range(5):
+        print(f"{i}---------------------------------------------")
         print(f'State:{con.read}')
         print("---------------------------------------------")
         sleep(0.2)
-    print(f'State:{con.prettyRead(1)}')
-    print(con.prettyRead(1).head)
+
+    print(
+        "Better yet, you can use prettyRead() to sample as many times as desired for any required duration."
+    )
+    print(
+        f"And then return it as a dataframe, can even write it to a file by supplying the filename.\n {con.prettyRead(1).head()}"
+    )
+    print("Do note that the final three columns are metadata.")
 
 
 if __name__ == '__main__':

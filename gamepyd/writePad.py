@@ -11,11 +11,9 @@ if '32' in platform.architecture()[0]:
 else:
     arc = '64'
 
-_path = os.path.abspath(os.path.join(
-    os.path.dirname(__file__),
-    'vXboxInterface-x{}'.format(arc),
-    'vXboxInterface.dll'
-))
+_path = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), 'vXboxInterface-x{}'.format(arc),
+                 'vXboxInterface.dll'))
 _xinput = WinDLL(_path)
 
 
@@ -25,7 +23,6 @@ class MaxInputsReachedError(Exception):
     Attributes:
         message -- explanation of the error
     """
-
     def __init__(self, message):
         self.message = message
 
@@ -51,8 +48,7 @@ class vController(object):
     @classmethod
     def available_ids(self):
         ids = [
-            x for x in range(1, 5)
-            if _xinput.isControllerExists(c_int(x)) == 0
+            x for x in range(1, 5) if _xinput.isControllerExists(c_int(x)) == 0
         ]
 
         return ids
@@ -79,7 +75,7 @@ class vController(object):
             if self.id == 0:
                 break
 
-    def set_value(self, control, value=None):
+    def set_value(self, label, value=None):
         """Set a value on the controller
     If percent is True all controls will accept a value between -1.0 and 1.0
 
@@ -107,29 +103,33 @@ class vController(object):
         TriggerR        , Right Trigger
 
     """
-        func = getattr(_xinput, 'Set' + control)
-
-        if 'Axis' in control:
+        control = label
+        if label in ("Lx", "Ly", "Rx", "Ry"):
             target_type = c_short
+            control = "Axis" + label
+            print(f"inside:{control}")
 
             if self.percent:
                 target_value = int(32767 * value)
             else:
                 target_value = value
-        elif 'Btn' in control:
+        elif label in ('A', 'B', 'X', 'Y', 'START', 'SELECT', 'L3', 'R3'):
             target_type = c_bool
             target_value = bool(value)
-        elif 'Trigger' in control:
+            control = "Btn" + label
+        elif control in ('LT', 'RT'):
             target_type = c_byte
 
             if self.percent:
                 target_value = int(255 * value)
             else:
                 target_value = value
-        elif 'Dpad' in control:
+        elif control in ('UP', 'DOWN', 'LEFT', 'RIGHT'):
             target_type = c_int
             target_value = int(value)
 
+        print(f"outside:{control} and type: {type(control)}")
+        func = getattr(_xinput, 'Set' + control)
         func(c_uint(self.id), target_type(target_value))
 
 

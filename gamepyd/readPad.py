@@ -94,6 +94,38 @@ class rPad(object):
         analogs = state.XINPUT_GAMEPAD.__dict__()
         del analogs['wButtons']
         return {**analogs, **buttons}
+    def __loop(self, line, start, wait_ns, i): #Provides an easy loop
+        print(f"inner{i[0]} address:{id(i)}")
+        #foo=str(xbox.read)
+        #jot.write(foo+"\n")
+        if (time_ns() >= start + wait_ns):
+            print("executed loop")
+            moment = self.read  # will return a dictionary for instantaneous state of the controller
+            moment['time(ns)'] = time_ns()  #store current time in nanoseconds
+            moment['timeDelta(ms)'] = (
+                time_ns() -
+                start) / 10**6  #Store the time diffference in milliseconds
+            moment['error(ms)'] = moment['timeDelta(ms)'] - wait_ns / 10**6
+            line.append(moment)
+            i[0] += 1
+            #print(f"time elapsed={((time_ns()-start)/10**6)/1000}")
+            start = time_ns()
+
+        #        pbar.update(1)
+        #print(f"iteration {i} got gamepad like \n{moment}")
+        #else:
+        #  i-=1
+        #if (debug==True):
+        #clear_output(wait=True)  #clears output in jupyter
+        #print(f"iteration {i} got gamepad like \n{moment}") #print current state
+        #print(f"iteration {i} got line like \n{line}") #print current state
+        #sleep(step*0.5)
+        #end=perf_counter()
+        #dur=end-start
+        #print(f"RRRR:-------{dur}") if ((dur)<=step) else print(f"aaaa:>>>>>{dur}")
+        #print(f"\n total time={perf_counter()-st}") # print a line to seperate the tqdm progress bar
+        print(f"inner{i[0]} address:{id(i)}")
+    def __
 
     def record(self,
                duration: float = 5,
@@ -115,43 +147,18 @@ class rPad(object):
         start = time_ns()
         count = duration // rate
         wait_ns = rate * 10**9
-        i = 0
+        i = [0]
 
         #Time for the loop
         #pbar = tq(total=count, position=0, leave=True)
-        while (i < count):
-            #foo=str(xbox.read)
-            #jot.write(foo+"\n")
-            if (time_ns() >= start + wait_ns):
-                moment = self.read  # will return a dictionary for instantaneous state of the controller
-                moment['time(ns)'] = time_ns(
-                )  #store current time in nanoseconds
-                moment['timeDelta(ms)'] = (
-                    time_ns() -
-                    start) / 10**6  #Store the time diffference in milliseconds
-                moment['error(ms)'] = moment['timeDelta(ms)'] - wait_ns / 10**6
-                line.append(moment)
-                i += 1
-                #print(f"time elapsed={((time_ns()-start)/10**6)/1000}")
-                start = time_ns()
-        #        pbar.update(1)
-        #print(f"iteration {i} got gamepad like \n{moment}")
-        #else:
-        #  i-=1
-        #if (debug==True):
-        #clear_output(wait=True)  #clears output in jupyter
-        #print(f"iteration {i} got gamepad like \n{moment}") #print current state
-        #print(f"iteration {i} got line like \n{line}") #print current state
-        #sleep(step*0.5)
-        #end=perf_counter()
-        #dur=end-start
-        #print(f"RRRR:-------{dur}") if ((dur)<=step) else print(f"aaaa:>>>>>{dur}")
-        #print(f"\n total time={perf_counter()-st}") # print a line to seperate the tqdm progress bar
+        while (i[0] < count):
+            self.__loop(line, start, wait_ns, i)
 
         #write to disk if wanted
         if (len(file) > 0 and type == "df"):
             (pd.DataFrame(line)).to_feather(file)
         return pd.DataFrame(line)
+
 
     def capture(self,
                 stopper,
@@ -171,20 +178,7 @@ class rPad(object):
         i = 0
 
         while not bool((line[-1])[stopper]):
-            print(f"loopin {i}")
-            #foo=str(xbox.read)
-            #jot.write(foo+"\n")
-            if (time_ns() >= start + wait_ns):
-                moment = self.read  # instantaneous state of gamepad as a dictionary
-                moment['time(ns)'] = time_ns(
-                )  #store current time in nanoseconds
-                moment['timeDelta(ms)'] = (
-                    time_ns() -
-                    start) / 10**6  #Store the time diffference in milliseconds
-                moment['error(ms)'] = moment['timeDelta(ms)'] - wait_ns / 10**6
-                line.append(moment)
-                i += 1
-                start = time_ns()
+            self.__loop(line, start, wait_ns, i)
         #write to disk if wanted
         if (len(file) > 0 and type == "df"):
             (pd.DataFrame(line)).to_feather(file)

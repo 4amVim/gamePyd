@@ -7,11 +7,9 @@ if platform.architecture()[0] == '32bit':
 else:
     arc = '64'
 
-_path = os.path.abspath(os.path.join(
-    os.path.dirname(__file__),
-    'vXboxInterface-x{}'.format(arc),
-    'vXboxInterface.dll'
-))
+_path = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), 'vXboxInterface-x{}'.format(arc),
+                 'vXboxInterface.dll'))
 _xinput = WinDLL(_path)
 
 
@@ -21,16 +19,14 @@ class MissingDependancyError(Exception):
 
 
 if not _xinput.isVBusExists():
-    raise MissingDependancyError(
-        '''Unable to find VBus Controller.
+    raise MissingDependancyError('''Unable to find VBus Controller.
 
             For more information, refer to https://github.com/shauleiz/vXboxInterface/releases.
             For a quick-fix, install ScpVBus from the PreRequisites folder (or grab directly
             from the original repo at https://github.com/nefarius/ScpVBus/releases/tag/v1.7.1.1)
-        '''
-        )
+        ''')
 
-from .readPad import rController
+from .readPad import rPad
 from .readPad import main as test_read
 from .writePad import vController
 from .writePad import main as test_write

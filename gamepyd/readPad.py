@@ -52,7 +52,7 @@ class _xinput_state(Structure):
         return self.__dict__()[string]
 
 
-class rController(object):
+class rPad(object):
     """XInput Controller State reading object"""
 
     _buttons = {  # All possible button values
@@ -72,12 +72,13 @@ class rController(object):
         'Y': 0x8000
     }
 
-    def __init__(self, ControllerID=1):
+    def __init__(self, ControllerID: int = 1):
         """
         Initialise Controller object.
         ControllerID    Int     Position of gamepad.
         """
         self.ControllerID = ControllerID
+        print(f"Now reading gamepad#{ControllerID}")
         self.dwPacketNumber = c_uint()
 
     @property
@@ -89,19 +90,16 @@ class rController(object):
         _xinput.XInputGetState(self.ControllerID - 1, pointer(state))
         self.dwPacketNumber = state.dwPacketNumber
         check = lambda x: (state.XINPUT_GAMEPAD.wButtons & x) == x
-        buttons = {
-            name: check(value)
-            for name, value in rController._buttons.items()
-        }
+        buttons = {name: check(value) for name, value in rPad._buttons.items()}
         analogs = state.XINPUT_GAMEPAD.__dict__()
         del analogs['wButtons']
         return {**analogs, **buttons}
 
-    def prettyRead(self,
-                   duration: float = 5,
-                   rate: float = float(1 / 120),
-                   file: str = "",
-                   type="df"):
+    def record(self,
+               duration: float = 5,
+               rate: float = float(1 / 120),
+               file: str = "",
+               type="df"):
         """
         Adds more functionality to read
         """
@@ -155,9 +153,46 @@ class rController(object):
             (pd.DataFrame(line)).to_feather(file)
         return pd.DataFrame(line)
 
+    def capture(self,
+                stopper,
+                rate: float = float(1 / 120),
+                file: str = "",
+                type="df"):
+        print(stopper)
+        if stopper not in self._buttons:
+            print("Choose a button label to end recording please")
+            print(f"Your choices are ${self._buttons}")
+            return 1
+
+        #Setup loop parameters
+        line = [self.read]
+        start = time_ns()
+        wait_ns = rate * 10**9
+        i = 0
+
+        while not bool((line[-1])[stopper]):
+            print(f"loopin {i}")
+            #foo=str(xbox.read)
+            #jot.write(foo+"\n")
+            if (time_ns() >= start + wait_ns):
+                moment = self.read  # instantaneous state of gamepad as a dictionary
+                moment['time(ns)'] = time_ns(
+                )  #store current time in nanoseconds
+                moment['timeDelta(ms)'] = (
+                    time_ns() -
+                    start) / 10**6  #Store the time diffference in milliseconds
+                moment['error(ms)'] = moment['timeDelta(ms)'] - wait_ns / 10**6
+                line.append(moment)
+                i += 1
+                start = time_ns()
+        #write to disk if wanted
+        if (len(file) > 0 and type == "df"):
+            (pd.DataFrame(line)).to_feather(file)
+        return pd.DataFrame(line)
+
 
 def main():
-    """Test the functionality of the rController object"""
+    """Test the functionality of the rPad object"""
     from time import sleep
 
     print('Testing controller in position 1:')
@@ -165,7 +200,7 @@ def main():
         "This will just take a second. We'll look at the controller values in 200 milli-second intervals:"
     )
     # Initialise Controller
-    con = rController(1)
+    con = rPad(1)
     # Loop printing controller state and buttons held
     for i in range(5):
         print(f"{i}---------------------------------------------")

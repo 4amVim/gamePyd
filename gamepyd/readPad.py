@@ -149,13 +149,7 @@ class rPad(object):
                file: str = "",
                type="df"):
         """
-        Adds more functionality to read
-        """
-        """
-        Opens the game, and records for seconds, possibly writing to file
-        seconds=time to record for, in seconds
-        interval gives how often to record, in seconds)
-        file, if provided, creates/overwrites into that filename at root
+        Records for a given duration at a fixed rate, possibly to a file
         """
 
         #Setup loop parameters
@@ -178,7 +172,9 @@ class rPad(object):
                 rate: float = float(1 / 120),
                 file: str = "",
                 type="df"):
-        print(stopper)
+        """
+        Records till mentioned button is pressed at a fixed rate, possibly to a file
+        """
         if stopper not in self._buttons:
             print("Choose a button label to end recording please")
             print(f"Your choices are ${self._buttons}")

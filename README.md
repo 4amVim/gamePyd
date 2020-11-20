@@ -25,14 +25,13 @@ Now that the basics are done, we ought to go throught the usual motions:
     pip install gamePyd
 
 ### Are you in a rush?
-Ok, so here goes, this library contains two main modules. [writePad](/gamePyd/writePad.py) is for creating a virtual controller and
-[readPad](/gamePyd/readPad.py) is for reading the current state of any xbox controller (virtual or real). Run to line 77 of the former to start controlling.
+Ok, so here goes, this library contains two main modules. [writePad](/gamePyd/writePad.py) is for playing with a virtual gamepad and
+[readPad](/gamePyd/readPad.py) is for reading the current state of any xbox controller (virtual or real). You can record in a plethora of ways, with default outputs being in dataframes. In general, polling the controller at 120Hz can be done within an error of less than a millisecond, although that might be a conservative estimate if your machine's beefed up.
 
-If you're not in a rush, we've got a bit more to talk about.
-
+If you're not in a rush, please head to the [wiki pages](https://github.com/PCplays/gamePyd/wiki). If you'd like to request any features please raise an issue.
 
 ### Test the creation of virtual controllers
-Running `pyxinput.test_virtual()` should yield:
+Running `gamepyd.test_virtual()` should yield:
 ```
 Connecting Controller:
 This ID: 1
@@ -90,9 +89,6 @@ And then return it as a dataframe, can even write it to a file by supplying the 
 4   0   0   0   0   0   0  False  False  False  False  False   False  False  False  False  False  False  False  False  False  1605620332328678100         8.9762   0.642867
 Do note that the final three columns are metadata.
 ```
-
-### Coding Styles
-I'll be updating the wiki once this project gets to v0.1.0 (see the accompanying project-board for a pseudo-timeline).
 
 ## Credits
 * **Ayush Rawat** - *Main Developer* - [PCplays](https://github.com/PCplays)

@@ -94,12 +94,11 @@ class rPad(object):
         analogs = state.XINPUT_GAMEPAD.__dict__()
         del analogs['wButtons']
         return {**analogs, **buttons}
-    def __loop(self, line, start, wait_ns, i): #Provides an easy loop
-        print(f"inner{i[0]} address:{id(i)}")
+
+    def __loop(self, line, start, wait_ns, i):  #Provides an easy loop
         #foo=str(xbox.read)
         #jot.write(foo+"\n")
         if (time_ns() >= start + wait_ns):
-            print("executed loop")
             moment = self.read  # will return a dictionary for instantaneous state of the controller
             moment['time(ns)'] = time_ns()  #store current time in nanoseconds
             moment['timeDelta(ms)'] = (
@@ -124,8 +123,25 @@ class rPad(object):
         #dur=end-start
         #print(f"RRRR:-------{dur}") if ((dur)<=step) else print(f"aaaa:>>>>>{dur}")
         #print(f"\n total time={perf_counter()-st}") # print a line to seperate the tqdm progress bar
-        print(f"inner{i[0]} address:{id(i)}")
-    def __
+
+    def __write(
+            self, line, type: str,
+            dest: str):  #Provides writing facility given a type and location
+
+        supportedTypes = ["df"]
+        if type not in supportedTypes:
+            print(
+                f"sorry, currently supported types are: {str(supportedTypes)[1:-1]}"
+            )
+
+        #Save to disk if required
+        if (len(dest) > 0 and type == "df"):
+            (pd.DataFrame(line)).to_feather(dest)
+        #elif(len(file) > 0 and type == "list"):
+
+        if (type == "df"):
+            return pd.DataFrame(line)
+        #elif(type == "list"):
 
     def record(self,
                duration: float = 5,
@@ -154,11 +170,8 @@ class rPad(object):
         while (i[0] < count):
             self.__loop(line, start, wait_ns, i)
 
+        return self.__write(line, type, file)
         #write to disk if wanted
-        if (len(file) > 0 and type == "df"):
-            (pd.DataFrame(line)).to_feather(file)
-        return pd.DataFrame(line)
-
 
     def capture(self,
                 stopper,
@@ -180,9 +193,7 @@ class rPad(object):
         while not bool((line[-1])[stopper]):
             self.__loop(line, start, wait_ns, i)
         #write to disk if wanted
-        if (len(file) > 0 and type == "df"):
-            (pd.DataFrame(line)).to_feather(file)
-        return pd.DataFrame(line)
+        return self.__write(line, type, file)
 
 
 def main():

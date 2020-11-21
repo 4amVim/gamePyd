@@ -1,16 +1,17 @@
-# PYXInput
+# gamePyd
 
-A Python Library for emulating xbox controllers on Windows as well as reading the state of controllers using standard XInput. This is an adaptation of the the vXbox by vJoy made by user `bayangan1991` [at](https://github.com/bayangan1991/PYXInput) that makes it way more fun to use. The original implementation can be found at [vXboxInterface](http://vjoystick.sourceforge.net/site/index.php/vxbox) but be aware it will not function with the project.
-This fork's purpose is to improve upon readability, useability and bling bling.
+This python library aims to make reading and emulating xbox controllers trivial on Windows. We use `nefarius`'s [ScpVBus](https://github.com/nefarius/ScpVBus) to interact with XInput,
+and provide helper functions for most encountered use cases along with exposing the building blocks of them for easy extensibility.
 
 ## Prerequisites
 
-This library should work with anything after Python 3.6, albeit testing has only been done on 3.8.4 and later. 
+This library should work with anything after Python 3.6, albeit testing has only been done on 3.8.4 and later. Currently the only supported OS is Windows 10.
 
 To use the Virtual Controller object, you need `ScpVBus`. For ease [one of it's versions](https://github.com/shauleiz/vXboxInterface) is included in this project. More information about the original can be found at [nefarius's archived repo](https://github.com/nefarius/ScpVBus).
 You'll probably also require [x360ce](https://www.x360ce.com/#Help_Old_Version) for easing the connection to games as well as debugging it. I've included it's older version as that's the one that worked for me. 
 
 ### Installing ScpVbus
+We need ScpVBus to talk to Windows about gamepad related details:
 Open an elevated cmd command prompt in the ScpVBus-x64 directory and run `devcon.exe install ScpVBus.inf Root\ScpVBus`. Successful run is indicated by the following message:
 
     Device node created. Install is complete when drivers are installed...
@@ -25,8 +26,9 @@ Now that the basics are done, we ought to go throught the usual motions:
     pip install gamePyd
 
 ### Are you in a rush?
-Ok, so here goes, this library contains two main modules. [writePad](/gamePyd/writePad.py) is for playing with a virtual gamepad and
-[readPad](/gamePyd/readPad.py) is for reading the current state of any xbox controller (virtual or real). You can record in a plethora of ways, with default outputs being in dataframes. In general, polling the controller at 120Hz can be done within an error of less than a millisecond, although that might be a conservative estimate if your machine's beefed up.
+Two main modules: [writePad](/gamePyd/writePad.py) is for playing with a virtual gamepad and [readPad](/gamePyd/readPad.py) is for reading the current state of any xbox controller (virtual or real).
+You can record in a plethora of ways, with default output being a dataframe with each snapshot as a row. In general, polling the controller at 120Hz can be done within sub-millisecond error bounds,
+although that's a conservative estimate subject to change given your machine's beefiness.
 
 If you're not in a rush, please head to the [wiki pages](https://github.com/PCplays/gamePyd/wiki). If you'd like to request any features please raise an issue.
 

@@ -3,8 +3,9 @@
 Python Implepentation of vXbox from:
 http://vjoystick.sourceforge.net/site/index.php/vxbox"""
 from ctypes import *
-import os
-import platform
+import os, platform
+from time import time_ns,sleep
+from pandas import DataFrame
 
 if '32' in platform.architecture()[0]:
     arc = '86'
@@ -151,9 +152,11 @@ class wPad(object):
         'Ly': ["AxisLy", c_short, 32767],
         'Rx': ["AxisRx", c_short, 32767],
         'Ry': ["AxisRy", c_short, 32767],
+        'LT':["TriggerL",c_byte,255],
+        'RT':["TriggerR",c_byte,255]
     }
 
-    def doSnap(self, snapshot: dict, check=True):
+    def playMoment(self, snapshot: dict, check=True):
         """
         Pass in a snapshot, say a row of the dataframe, or a part of it, and this function will 
         (by default vet it first), and then send it to the emulated gamepad.
@@ -182,6 +185,26 @@ class wPad(object):
             func = getattr(_xinput, 'Set' + label)
             func(c_uint(self.id), type(value))
 
+    def playback(self,dataframe:DataFrame,rate:float=1/120,check:bool=False):
+        # Oi this is a naive attempt at writing from a dataframe, 
+        # a sophisticated attempt that reads the error column and self-corrects will be the focus of v1.1
+        
+        wait_ns = rate * 10**9
+
+        #Time for the loop
+        #pbar = tq(total=count, position=0, leave=True)
+        for moment in dataframe.to_dict('records'):
+            #Get the metadata out
+            error=moment.pop('error(ms)')
+            timeDelta=moment.pop('timeDelta(ms)')
+            time=moment.pop('time(ns)')
+            #set gamepad state
+            self.playMoment(moment,True)
+            #reset timer
+            start = time_ns()
+            while (time_ns() <= start + wait_ns):
+                pass #gotta do this cos sleep isnt very accurate
+            print(f"timeDeltaDELTA={timeDelta-time_ns()+(start+wait_ns)}(plus or minus)")
 
 def main():
     import time

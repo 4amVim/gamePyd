@@ -180,9 +180,9 @@ class rPad(object):
 
         #Setup loop parameters
         line = [self.read]
-        start = time_ns()
+        start = [time_ns()]
         wait_ns = rate * 10**9
-        i = 0
+        i = [0]
 
         while not bool((line[-1])[stopper]):
             self.__loop(line, start, wait_ns, i)

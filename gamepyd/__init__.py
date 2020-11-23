@@ -28,5 +28,5 @@ if not _xinput.isVBusExists():
 
 from .readPad import rPad
 from .readPad import main as test_read
-from .writePad import vController
+from .writePad import wPad
 from .writePad import main as test_write

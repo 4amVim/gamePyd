@@ -11,18 +11,18 @@ jobs:
                 steps:
                         - uses: actions/checkout@v2
                         - name: Set-up Python 3.9
-                                uses: actions/setup-python@v2
-                                with:
+                          uses: actions/setup-python@v2
+                          with:
                                         python-version: '3.9'
                         - name: Install some dependencies
-                        run: python -m pip install --upgrade pip setuptools wheel build pandas
+                          run: python -m pip install --upgrade pip setuptools wheel build pandas
 
-                - name: Build binary wheel
-                  run: python -m build --sdist --wheel --outdir dist/.
+                        - name: Build binary wheel
+                          run: python -m build --sdist --wheel --outdir dist/.
 
-                - name: Publish to TestPyPi
-                  uses: pypa/gh-action-pypi-publish@master
-                  with:
-                          user: __token__
-                          password: ${{ secrets.TESTPYPI }}
-                          repository_url: https://test.pypi.org/legacy/
+                        - name: Publish to TestPyPi
+                          uses: pypa/gh-action-pypi-publish@master
+                          with:
+                                user: __token__
+                                password: ${{ secrets.TESTPYPI }}
+                                repository_url: https://test.pypi.org/legacy/

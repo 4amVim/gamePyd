@@ -33,38 +33,17 @@ Now that the basics are done, we ought to go throught the usual motions:
 
 ### Are you in a rush?
 Two main modules: 
-- [writePad](/gamePyd/writePad.py) contains [`w`]is for playing with a virtual gamepad 
-- [readPad](/gamePyd/readPad.py) is for reading the current state of any xbox controller (virtual or real).
-You can record in a plethora of ways, with default output being a dataframe with each snapshot as a row. In general, polling the controller at 120Hz can be done within sub-millisecond error bounds,
-although that's a conservative estimate subject to change given your machine's beefiness.
+- [writePad](/gamePyd/writePad.py) contains object [`wPad`] which you use to control (upto 4) virtual game pads
+- - use the [`playMoment`](https://github.com/PCplays/gamePyd/blob/d722064054d5c74cbbd819ac97f5230ca21a40c1/gamepyd/writePad.py#L159) method to assign a state passed in as a dictionary
+- - or pass in a dataframe with rows as states to [`playback`](https://github.com/PCplays/gamePyd/blob/d722064054d5c74cbbd819ac97f5230ca21a40c1/gamepyd/writePad.py#L188).
+- To read gamepads(virtual or physical), you use the [`rPad`](https://github.com/PCplays/gamePyd/blob/d722064054d5c74cbbd819ac97f5230ca21a40c1/gamepyd/readPad.py#L55) object in [readPad](/gamePyd/readPad.py)
+- - [`record`](https://github.com/PCplays/gamePyd/blob/d722064054d5c74cbbd819ac97f5230ca21a40c1/gamepyd/readPad.py#L144) will read the controller at a given  rate for a fixed duration, and return a dataframe.
+- - [`capture`](https://github.com/PCplays/gamePyd/blob/d722064054d5c74cbbd819ac97f5230ca21a40c1/gamepyd/readPad.py#L168) will do the same, but instead terminate only on detecting a specified button press on the controller.
 
 If you're not in a rush, please head to the [wiki pages](https://github.com/PCplays/gamePyd/wiki). If you'd like to request any features please raise an issue.
 
-### Test the creation of virtual controllers
-Running `gamepyd.test_virtual()` should yield:
-```
-Connecting Controller:
-This ID: 1
-Available: [2, 3, 4]
-Setting TriggerR and AxisLx:
-0.0
-0.1
-0.2
-0.3
-0.4
-0.5
-0.6
-0.7
-0.8
-0.9
-1.0
-Done, disconnecting controller.
-Available: [1, 2, 3, 4]
-```
-
 ### Test the reading of controllers
 Running `test_read()` should give (the output below was when no controller was plugged-in):
-
 
 ```
 Testing controller in position 1:
@@ -99,6 +78,13 @@ And then return it as a dataframe, can even write it to a file by supplying the 
 4   0   0   0   0   0   0  False  False  False  False  False   False  False  False  False  False  False  False  False  False  1605620332328678100         8.9762   0.642867
 Do note that the final three columns are metadata.
 ```
+
+### Roadmap
+Salient upcoming features are listed below (more details in the accompanying [project](https://github.com/PCplays/gamePyd/projects/2)):
+- [ ] Calibration for machine-to-machine speed differences, so as to automatically minimize deviation from reading rate.
+- [ ] Check for lag while writing to gamepads
+- [ ] Add unit tests
+- [ ] Expand the wiki
 
 ## Credits
 * **Ayush Rawat** - *Main Developer* - [PCplays](https://github.com/PCplays)

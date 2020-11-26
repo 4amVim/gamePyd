@@ -6,16 +6,16 @@ push:
 
 jobs:
         build-publish-release: 
-        name: Build, publish to TestPyPi and Release
-        runs-on: macos-latest
-        steps:
-                - uses: actions/checkout@v2
-                - name: Set-up Python 3.9
-                  uses: actions/setup-python@v2
-                  with:
-                          python-version: '3.9'
-                - name: Install some dependencies
-                  run: python -m pip install --upgrade pip setuptools wheel build pandas
+                name: Build, publish to TestPyPi and Release
+                runs-on: macos-latest
+                steps:
+                        - uses: actions/checkout@v2
+                        - name: Set-up Python 3.9
+                                uses: actions/setup-python@v2
+                                with:
+                                        python-version: '3.9'
+                        - name: Install some dependencies
+                        run: python -m pip install --upgrade pip setuptools wheel build pandas
 
                 - name: Build binary wheel
                   run: python -m build --sdist --wheel --outdir dist/.

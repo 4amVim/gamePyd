@@ -1,6 +1,6 @@
 # gamePyd
 
-<img src=./Docs/"Logo.png" align="right" width="200"/>
+<img src="../Docs/"Logo.png" align="right" width="200" height="200"/>
 
 Playing video games is fun isn't it? So why should making Python play games be any different ?
 It should at least be easy! surely ? That's what this library here is for.

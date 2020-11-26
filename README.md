@@ -1,7 +1,13 @@
 # gamePyd
 
-This python library aims to make reading and emulating xbox controllers trivial on Windows. We use `nefarius`'s [ScpVBus](https://github.com/nefarius/ScpVBus) to interact with XInput,
-and provide helper functions for most encountered use cases along with exposing the building blocks of them for easy extensibility.
+<img src=../Docs/"Logo.png" align="right" width="200" height="200"/>
+
+Playing video games is fun isn't it? So why should making Python play games be any different ?
+It should at least be easy! surely ? That's what this library here is for.
+gamePyd provides readymade methods for common use cases. It also gives you the bricks it used as well, making reading and emulating xbox controllers trivial on Windows.
+
+Ender the hood, `nefarius`'s [ScpVBus](https://github.com/nefarius/ScpVBus) is wrapped to interact with XInput, which is in turn wrapped in methods to let you work with your preffered data structure
+and seamlessly use the transformed information to control gamepads. Currently we support dataframes, lists and dictionaries.
 
 ## Prerequisites
 

@@ -3,8 +3,9 @@
 Python Implepentation of vXbox from:
 http://vjoystick.sourceforge.net/site/index.php/vxbox"""
 from ctypes import *
-import os
-import platform
+import os, platform
+from time import time_ns,sleep
+from pandas import DataFrame
 
 if '32' in platform.architecture()[0]:
     arc = '86'
@@ -27,7 +28,7 @@ class MaxInputsReachedError(Exception):
         self.message = message
 
 
-class vController(object):
+class wPad(object):
     """Virtual Controller Object
     percent, Bool, Determines if absolute or percentage values are passed"""
     DPAD_OFF = 0
@@ -101,7 +102,6 @@ class vController(object):
         Dpad            , Set Dpad Value (0 = Off, Use DPAD_### Constants)
         TriggerL        , Left Trigger
         TriggerR        , Right Trigger
-
     """
         control = label
         if label in ("Lx", "Ly", "Rx", "Ry"):
@@ -113,7 +113,7 @@ class vController(object):
                 target_value = int(32767 * value)
             else:
                 target_value = value
-        elif label in ('A', 'B', 'X', 'Y', 'START', 'SELECT', 'L3', 'R3'):
+        elif label in ('A', 'B', 'X', 'Y'):
             target_type = c_bool
             target_value = bool(value)
             control = "Btn" + label
@@ -132,6 +132,79 @@ class vController(object):
         func = getattr(_xinput, 'Set' + control)
         func(c_uint(self.id), target_type(target_value))
 
+    _buttons = {
+        # key button name is mapped to list of label,type,value(for on)
+        'UP': ["Dpad", c_int, 1],
+        'DOWN': ["Dpad", c_int, 2],
+        'LEFT': ["Dpad", c_int, 4],
+        'RIGHT': ["Dpad", c_int, 8],
+        'START': ["BtnStart", c_bool, 1],
+        'SELECT': ["BtnStart", c_bool, 1],
+        'L3': ["BtnThumbL", c_bool, 1],
+        'R3': ["BtnThumbR", c_bool, 1],
+        'LB': ["BtnX", c_bool, 1],
+        'RB': ["BtnX", c_bool, 1],
+        'A': ["BtnX", c_bool, 1],
+        'B': ["BtnX", c_bool, 1],
+        'X': ["BtnX", c_bool, 1],
+        'Y': ["BtnY", c_bool, 1],
+        'Lx': ["AxisLx", c_short, 32767],
+        'Ly': ["AxisLy", c_short, 32767],
+        'Rx': ["AxisRx", c_short, 32767],
+        'Ry': ["AxisRy", c_short, 32767],
+        'LT':["TriggerL",c_byte,255],
+        'RT':["TriggerR",c_byte,255]
+    }
+
+    def playMoment(self, snapshot: dict, check=True):
+        """
+        Pass in a snapshot, say a row of the dataframe, or a part of it, and this function will 
+        (by default vet it first), and then send it to the emulated gamepad.
+
+        Remember, it takes inputs only in the percentage form rn
+        """
+        if check:  #We'll vet the keys of the dictionary a bit
+            for key in snapshot:
+                if key not in self._buttons.keys():
+                    raise IndexError(
+                        f"please pass in a valid snapshot, got issues with {key}"
+                    )
+            else:
+                print(f"doSnap got a valid dictionary: {snapshot}")
+
+        for key in snapshot:
+            """
+            See there are three things: label, target_type and target value
+            """
+            info = self._buttons[key]
+            #Extract relevant info
+            label = info[0]
+            type = info[1]
+            value = round(info[2] * snapshot[key])
+            #Send it
+            func = getattr(_xinput, 'Set' + label)
+            func(c_uint(self.id), type(value))
+
+    def playback(self,dataframe:DataFrame,rate:float=1/120,check:bool=False):
+        # Oi this is a naive attempt at writing from a dataframe, 
+        # a sophisticated attempt that reads the error column and self-corrects will be the focus of v1.1
+        
+        wait_ns = rate * 10**9
+
+        #Time for the loop
+        #pbar = tq(total=count, position=0, leave=True)
+        for moment in dataframe.to_dict('records'):
+            #Get the metadata out
+            error=moment.pop('error(ms)')
+            timeDelta=moment.pop('timeDelta(ms)')
+            time=moment.pop('time(ns)')
+            #set gamepad state
+            self.playMoment(moment,True)
+            #reset timer
+            start = time_ns()
+            while (time_ns() <= start + wait_ns):
+                pass #gotta do this cos sleep isnt very accurate
+            print(f"timeDeltaDELTA={timeDelta-time_ns()+(start+wait_ns)}(plus or minus)")
 
 def main():
     import time
@@ -141,40 +214,41 @@ def main():
     while True:
         print('Connecting Controller:')
         try:
-            cons.append(vController())
+            cons.append(wPad())
         except MaxInputsReachedError:
             break
         else:
-            print('Available:', vController.available_ids())
+            print('Available:', wPad.available_ids())
             print('This ID:', cons[-1].id)
 
         # time.sleep(1)
 
     print('Done, disconnecting controllers.')
     del cons
-    print('Available:', vController.available_ids())
+    print('Available:', wPad.available_ids())
     time.sleep(2)
 
     print('Testing Value setting')
     print('Connecting Controller:')
     try:
-        con = vController()
+        con = wPad()
     except MaxInputsReachedError:
         print('Unable to connect controller for testing.')
     else:
         print('This ID:', con.id)
-        print('Available:', vController.available_ids())
+        print('Available:', wPad.available_ids())
         print('Setting TriggerR and AxisLx:')
         for x in range(11):
             val = x / 10
             print(val)
             con.set_value('TriggerR', val)
             con.set_value('AxisLx', val)
+            #add test for Dpad and button as well
             time.sleep(0.5)
 
         print('Done, disconnecting controller.')
         del con
-        print('Available:', vController.available_ids())
+        print('Available:', wPad.available_ids())
         time.sleep(2)
 
 

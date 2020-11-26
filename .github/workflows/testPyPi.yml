@@ -1,8 +1,8 @@
 name: Publish to testPyPi
-on: 
-        push:
-                tags:
-                        -'v*'
+on:
+  push:
+    tags:
+    - '*'
 
 jobs:
         build-publish-release: 

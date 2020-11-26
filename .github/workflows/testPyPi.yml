@@ -7,7 +7,7 @@ on:
 jobs:
         build-publish-release: 
                 name: Build, publish to TestPyPi and Release
-                runs-on: macos-latest
+                runs-on: ubuntu-latest
                 steps:
                         - uses: actions/checkout@v2
                         - name: Set-up Python 3.9

@@ -101,7 +101,7 @@ Do note that the final three columns are metadata.
 ## Credits
 * **Ayush Rawat** - *Main Developer* - [PCplays](https://github.com/PCplays)
 
-* **Ryan Barnes** - *Authot of PYXInput* - [bayangan1991](https://github.com/bayangan1991)
+* **Ryan Barnes** - *Authot of [PYXInput](https://github.com/bayangan1991/PYXInput)* - [bayangan1991](https://github.com/bayangan1991)
 
 See also the list of [contributors](https://github.com/bayangan1991/PYXInput/graphs/contributors) who participated in PYXinput (from which this project was forked).
 

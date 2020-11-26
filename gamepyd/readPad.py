@@ -72,13 +72,17 @@ class rPad(object):
         'Y': 0x8000
     }
 
-    def __init__(self, ControllerID: int = 1):
+    def __init__(self, ControllerID: int = 1, absolute: bool = False):
         """
         Initialise Controller object.
         ControllerID    Int     Position of gamepad.
         """
         self.ControllerID = ControllerID
-        print(f"Now reading gamepad#{ControllerID}")
+        self.dwPacketNumber = c_uint()
+        self.absolute = absolute
+        print(f"Now reading gamepad#{ControllerID} as ABSOLUTE values"
+              ) if self.absolute else print(
+                  f"Now reading gamepad#{ControllerID}")
         self.dwPacketNumber = c_uint()
 
     @property
@@ -86,6 +90,7 @@ class rPad(object):
         """
         Returns the current gamepad state.
         """
+        """If you wanna optimize reading, this is THE method to look at first"""
         state = _xinput_state()
         _xinput.XInputGetState(self.ControllerID - 1, pointer(state))
         self.dwPacketNumber = state.dwPacketNumber
@@ -98,31 +103,17 @@ class rPad(object):
     def __loop(self, line, start, wait_ns, i):  #Provides an easy loop
         #foo=str(xbox.read)
         #jot.write(foo+"\n")
-        if (time_ns() >= start + wait_ns):
+        if (time_ns() >= start[0] + wait_ns):
             moment = self.read  # will return a dictionary for instantaneous state of the controller
             moment['time(ns)'] = time_ns()  #store current time in nanoseconds
             moment['timeDelta(ms)'] = (
                 time_ns() -
-                start) / 10**6  #Store the time diffference in milliseconds
+                start[0]) / 10**6  #Store the time diffference in milliseconds
             moment['error(ms)'] = moment['timeDelta(ms)'] - wait_ns / 10**6
             line.append(moment)
             i[0] += 1
             #print(f"time elapsed={((time_ns()-start)/10**6)/1000}")
-            start = time_ns()
-
-        #        pbar.update(1)
-        #print(f"iteration {i} got gamepad like \n{moment}")
-        #else:
-        #  i-=1
-        #if (debug==True):
-        #clear_output(wait=True)  #clears output in jupyter
-        #print(f"iteration {i} got gamepad like \n{moment}") #print current state
-        #print(f"iteration {i} got line like \n{line}") #print current state
-        #sleep(step*0.5)
-        #end=perf_counter()
-        #dur=end-start
-        #print(f"RRRR:-------{dur}") if ((dur)<=step) else print(f"aaaa:>>>>>{dur}")
-        #print(f"\n total time={perf_counter()-st}") # print a line to seperate the tqdm progress bar
+            start[0] = time_ns()
 
     def __write(
             self, line, type: str,
@@ -134,13 +125,20 @@ class rPad(object):
                 f"sorry, currently supported types are: {str(supportedTypes)[1:-1]}"
             )
 
+        if (type == "df"):
+            output = pd.DataFrame(line)
+            if not self.absolute:
+                #The following line is technically inaccurate as Bryan says "Axis are -32768 to 32767"
+                output[['Lx', 'Ly', 'Rx',
+                        'Ry']] = output[['Lx', 'Ly', 'Rx', 'Ry']] / 32768
+                output[['LT', 'RT']] = output[['LT', 'RT']] / 255
+
         #Save to disk if required
         if (len(dest) > 0 and type == "df"):
             (pd.DataFrame(line)).to_feather(dest)
         #elif(len(file) > 0 and type == "list"):
 
-        if (type == "df"):
-            return pd.DataFrame(line)
+        return output
         #elif(type == "list"):
 
     def record(self,
@@ -154,7 +152,7 @@ class rPad(object):
 
         #Setup loop parameters
         line = []
-        start = time_ns()
+        start = [time_ns()]
         count = duration // rate
         wait_ns = rate * 10**9
         i = [0]
@@ -182,9 +180,9 @@ class rPad(object):
 
         #Setup loop parameters
         line = [self.read]
-        start = time_ns()
+        start = [time_ns()]
         wait_ns = rate * 10**9
-        i = 0
+        i = [0]
 
         while not bool((line[-1])[stopper]):
             self.__loop(line, start, wait_ns, i)

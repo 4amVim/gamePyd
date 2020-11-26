@@ -33,7 +33,8 @@ Now that the basics are done, we ought to go throught the usual motions:
 
 ### Are you in a rush?
 Two main modules: 
-- [writePad](/gamePyd/writePad.py) contains [`w`]is for playing with a virtual gamepad and [readPad](/gamePyd/readPad.py) is for reading the current state of any xbox controller (virtual or real).
+- [writePad](/gamePyd/writePad.py) contains [`w`]is for playing with a virtual gamepad 
+- [readPad](/gamePyd/readPad.py) is for reading the current state of any xbox controller (virtual or real).
 You can record in a plethora of ways, with default output being a dataframe with each snapshot as a row. In general, polling the controller at 120Hz can be done within sub-millisecond error bounds,
 although that's a conservative estimate subject to change given your machine's beefiness.
 

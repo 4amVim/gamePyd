@@ -40,16 +40,15 @@ setup(
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
-        'Topic :: Software Development :: Build Tools',
+        'Topic :: Software Development :: Libraries :: Application Frameworks',
         'License :: OSI Approved :: The Unlicense (Unlicense)',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
     ],
-    python_requires='>=3.6',
-    keywords='virtual xbox controller xinput pyxinput',
+    python_requires='>=3.8',
+    keywords='virtual xbox controller xinput pyxinput  gamepad',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
     # installs the DLL with the package

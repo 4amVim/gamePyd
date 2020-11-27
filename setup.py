@@ -49,6 +49,11 @@ setup(
     ],
     python_requires='>=3.8',
     keywords='virtual xbox controller xinput pyxinput  gamepad',
+    project_urls={
+    'Documentation': 'https://github.com/PCplays/gamePyd/wiki',
+    'Source': 'https://github.com/PCplays/gamePyd',
+    'Tracker': 'https://github.com/PCplays/gamePyd/projects',
+},
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
     # installs the DLL with the package

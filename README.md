@@ -85,6 +85,7 @@ Salient upcoming features are listed below (more details in the accompanying [pr
 - [ ] Check for lag while writing to gamepads
 - [ ] Add unit tests
 - [ ] Expand the wiki
+- [ ] Perfomance testing
 
 ## Credits
 * **Ayush Rawat** - *Main Developer* - [PCplays](https://github.com/PCplays)

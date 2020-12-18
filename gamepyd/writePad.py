@@ -1,3 +1,4 @@
+from pandas import DataFrame, read_feather
 """Virtual Controller Object for Python
 
 Python Implepentation of vXbox from:
@@ -156,6 +157,12 @@ class wPad(object):
         'RT': ["TriggerR", c_byte, 255]
     }
 
+    def __read(self, file: str = "", type: str = "df"):
+        if len(file) == 0:
+            print("file not found ?!")
+        elif type == "df":
+            return read_feather(file)
+
     def playMoment(self, snapshot: dict, check=True):
         """
         Pass in a snapshot, say a row of the dataframe, or a part of it, and this function will 
@@ -185,10 +192,7 @@ class wPad(object):
             func = getattr(_xinput, 'Set' + label)
             func(c_uint(self.id), type(value))
 
-    def playback(self,
-                 dataframe: DataFrame,
-                 rate: float = 1 / 120,
-                 check: bool = False):
+    def playback(self, data, rate: float = 1 / 120, check: bool = False):
         # Oi this is a naive attempt at writing from a dataframe,
         # a sophisticated attempt that reads the error column and self-corrects will be the focus of v1.1
 
@@ -196,6 +200,11 @@ class wPad(object):
 
         #Time for the loop
         #pbar = tq(total=count, position=0, leave=True)
+        if isinstance(data, DataFrame):
+            dataframe = data
+        elif isinstance(data, str):
+            dataframe = self.__read(data)
+
         for moment in dataframe.to_dict('records'):
             #Get the metadata out
             error = moment.pop('error(ms)')

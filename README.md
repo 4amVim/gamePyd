@@ -1,4 +1,4 @@
-# gamePyd
+# [gamePyd](http://pypi.org/project/gamePyd)
 
 <img src="./Docs/Logo.png" align="left" width="200" height="102.751" text="credit @_anininininini_"/>
 

@@ -88,7 +88,7 @@ Salient upcoming features are listed below (more details in the accompanying [pr
 - [ ] Perfomance testing
 
 ## Credits
-* **Ayush Rawat** - *Main Developer* - [PCplays](https://github.com/PCplays)
+* **Ayush Rawat** - *Main Developer* - [4amvim](https://github.com/4amvim)
 
 * **Ryan Barnes** - *Authot of [PYXInput](https://github.com/bayangan1991/PYXInput)* - [bayangan1991](https://github.com/bayangan1991)
 

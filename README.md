@@ -1,6 +1,6 @@
 # [gamePyd](http://pypi.org/project/gamePyd)
 
-<img src="./Docs/Logo.png" align="left" width="200" height="102.751" text="credit @_anininininini_"/>
+<img src="https://raw.githubusercontent.com/4amvim/gamePyd/master/Docs/Logo.png" align="left" width="200" height="102.751" text="credit @_anininininini_"/>
 
 Playing video games is fun isn't it? So why should making Python play games be any different ?
 It should at least be easy! surely ? That's what this library here is for.
